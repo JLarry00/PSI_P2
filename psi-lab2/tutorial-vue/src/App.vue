@@ -7,7 +7,9 @@
   <div class="row">
       <div class="col-md-12">
         <formulario-persona @add-persona="agregarPersona" />
-        <tabla-personas :personas="personas" @delete-persona="eliminarPersona" />
+        <tabla-personas :personas="personas" 
+          @delete-persona="eliminarPersona" 
+          @actualizar-persona="actualizarPersona" />
       </div>
   </div>
   </div>
@@ -46,17 +48,15 @@ const eliminarPersona = (id) => {
   }
 };
 
-const guardarPersona = (persona) => {
-  if (!persona.nombre.length || !persona.apellido.length || !persona.email.length) {return;}
-  emit('actualizar-persona', persona.id, persona);
-  editando.value = null;
+const actualizarPersona = (id, personaActualizada) => {
+  try {
+    personas.value = personas.value.map(persona =>
+    persona.id === id ? personaActualizada : persona);
+  }
+  catch(error){
+    console.error(error);
+  }
 };
-
-const cancelarEdicion = (persona) => {
-  Object.assign(persona, personaEditada.value);
-  editando.value = null;
-};
-
 </script>
 
 <style>
