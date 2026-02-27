@@ -1,17 +1,24 @@
 <!-- App.vue -->
 <template>
-  <div id="app" class="container">
-  <div class="row">
-      <div class="col-md-12"><h1>Personas</h1></div>
-  </div>
-  <div class="row">
+  <div
+    id="app"
+    class="container"
+  >
+    <div class="row">
+      <div class="col-md-12">
+        <h1>Personas</h1>
+      </div>
+    </div>
+    <div class="row">
       <div class="col-md-12">
         <formulario-persona @add-persona="agregarPersona" />
-        <tabla-personas :personas="personas" 
+        <tabla-personas
+          :personas="personas" 
           @delete-persona="eliminarPersona" 
-          @actualizar-persona="actualizarPersona" />
+          @actualizar-persona="actualizarPersona"
+        />
       </div>
-  </div>
+    </div>
   </div>
 </template>
 
@@ -23,7 +30,7 @@ import { ref } from 'vue';
 // definicion del componente
 defineOptions({
 // nombre del componente
-name: 'app',
+name: 'App',
 });
 
 const personas = ref([]);

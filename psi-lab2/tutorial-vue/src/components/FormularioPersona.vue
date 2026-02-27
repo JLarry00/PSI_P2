@@ -51,13 +51,18 @@
             </div>
           </div>
         </div>
-        <br />
+        <br>
         <!-- Segunda fila con un boton para agregar persona -->
         <div class="row">
           <div class="col-md-4">
             <div class="form-group">
               <!-- Boton para agnadir persona -->
-              <button class="btn btn-primary" data-cy="add-button">Agnadir persona</button>
+              <button
+                class="btn btn-primary"
+                data-cy="add-button"
+              >
+                Agnadir persona
+              </button>
             </div>
           </div>
         </div>
@@ -91,7 +96,7 @@
 import { ref, computed, getCurrentInstance, onMounted } from 'vue';
 
 defineOptions({
-    name: 'formulario-persona',
+    name: 'FormularioPersona',
 });
 
 const procesando = ref(false);
