@@ -1,29 +1,30 @@
 <!-- src/components/TablaPersonas.vue -->
-
 <template>
-  <!-- Contenedor principal del componente -->
+  
   <div id="tabla-personas">
-    <!-- Tabla HTML para mostrar la informacion de personas -->
+
+    <div v-if="!personas.length" class="alert alert-info" role="alert">
+      No se han encontrado personas
+    </div>
+
     <table class="table">
-      <!-- Encabezado de la tabla -->
       <thead>
-        <!-- nombres de columnas -->
         <tr>
           <th>Nombre</th>
           <th>Apellido</th>
           <th>Email</th>
+          <th>Acciones</th>
         </tr>
       </thead>
-      <!-- Cuerpo de la tabla con datos dinamicos -->
       <tbody>
-        <!-- Iteracion sobre el array de personas utilizando v-for -->
         <tr v-for="persona in personas" :key="persona.id">
-          <!-- Celda de datos para el nombre de la persona -->
           <td>{{ persona.nombre }}</td>
-          <!-- Celda de datos para el apellido de la persona -->
           <td>{{ persona.apellido }}</td>
-          <!-- Celda de datos para el correo electronico de la persona -->
           <td>{{ persona.email }}</td>
+          <td>
+            <!-- &#x1F5D1; is the wastebasket icon. Icons available at https://codepoints.net -->
+            <button class="btn btn-danger" @click="$emit('delete-persona', persona.id)" >&#x1F5D1; Eliminar</button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -31,13 +32,10 @@
 </template>
 
 <script setup>
-  // definicion del componente
   defineOptions({
-    // nombre del componente
     name: 'tabla-personas',
   });
 
-  // declaramos y damos valor por defecto para la propiedad personas
   const props = defineProps({
     personas: {type: Array, default: []},
   });
