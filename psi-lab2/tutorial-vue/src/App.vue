@@ -11,7 +11,12 @@
     </div>
     <div class="row">
       <div class="col-md-12">
-        <formulario-persona @add-persona="agregarPersona" />
+        <!-- <formulario-persona @add-persona="agregarPersona" /> -->
+        <formulario-persona
+          :add-result="addResult"
+          @add-persona="agregarPersona"
+          @clear-add-result="addResult = null"
+        />
         <tabla-personas
           :personas="personas"
           @delete-persona="eliminarPersona"
@@ -35,6 +40,8 @@
   });
 
   const personas = ref([]);
+  // addResult = null | { success: true } | { success: false, message: string }
+  const addResult = ref(null);
 
   const listadoPersonas = async () => {
     // Metodo para obtener un listado de personas
@@ -47,6 +54,7 @@
   };
 
   const agregarPersona = async (persona) => {
+    addResult.value = null;
     try {
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -55,14 +63,38 @@
       });
       
       const personaCreada = await response.json();
+
       if (!response.ok) {
-        console.error('Error al agregar la persona', personaCreada);
+
+        let message = 'No se ha podido agregar la persona.';
+
+        if (personaCreada && typeof personaCreada === 'object') {
+          const firstKey = Object.keys(personaCreada)[0];     // p.ej. "email"
+          const firstValue = personaCreada[firstKey];         // p.ej. ["Enter a valid email address."]
+
+          let firstMessage = '';
+          if (Array.isArray(firstValue) && firstValue.length > 0) {
+            firstMessage = firstValue[0];                     // "Enter a valid email address."
+          } else if (typeof firstValue === 'string') {
+            firstMessage = firstValue;
+          }
+          message = `${firstKey}: ${firstMessage}`;
+        }
+        
+        addResult.value = { success: false, message };
         return;
       }
-      personas.value = [...personas.value, personaCreada];
-      
+
+      if (personaCreada != null) {
+        personas.value = [...personas.value, personaCreada];
+      }
+      addResult.value = { success: true };
     } catch (error) {
       console.error(error);
+      addResult.value = {
+        success: false,
+        message: 'Error de red. Inténtalo de nuevo más tarde.',
+      };
     }
   };
 

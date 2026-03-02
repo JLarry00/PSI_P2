@@ -88,6 +88,13 @@
             >
               La persona ha sido agregada correctamente!
             </div>
+            <div
+              v-else-if="addResult != null && addResult.success === false"
+              class="alert alert-danger"
+              role="alert"
+            >
+              {{ addResult.message }}
+            </div>
           </div>
         </div>
       </div>
@@ -103,7 +110,7 @@ defineOptions({
 });
 
 const procesando = ref(false);
-const correcto = ref(false);
+// const correcto = ref(false);
 const error = ref(false);  
 const instance = getCurrentInstance(); 
 
@@ -114,7 +121,12 @@ const persona = ref({
     email: '',
 });
 
-const emit = defineEmits(['add-persona']);
+const props = defineProps({
+  addResult: { type: Object, default: null },
+});
+const correcto = computed(() => props.addResult != null && props.addResult.success === true);
+
+const emit = defineEmits(['add-persona', 'clear-add-result']);
 
 const enviarFormulario = () => {
   procesando.value = true;
@@ -139,12 +151,12 @@ const enviarFormulario = () => {
   };
 
   error.value = false;
-  correcto.value = true;
+  // correcto.value = true;
   procesando.value = false;
 };
 
 const resetEstado = () => {
-  correcto.value = false;
+  // correcto.value = false;
   error.value = false;
 };
 
