@@ -28,6 +28,8 @@ import FormularioPersona from '@/components/FormularioPersona.vue'
 import { ref, onMounted } from 'vue';
 // import { useCounterStore } from '@/stores/counter'; // usar en método correspondiente
 
+const API_URL = 'http://localhost:8001/api/v1/personas/';
+
 defineOptions({
   name: 'app',
 });
@@ -37,7 +39,7 @@ const personas = ref([]);
 const listadoPersonas = async () => {
   // Metodo para obtener un listado de personas
   try {
-    const response = await fetch('https://my-json-server.typicode.com/rmarabini/people/personas/');
+    const response = await fetch(API_URL);
     personas.value = await response.json();
   } catch (error) {
     console.error(error);
@@ -46,7 +48,7 @@ const listadoPersonas = async () => {
 
 const agregarPersona = async (persona) => {
   try {
-    const response = await fetch('https://my-json-server.typicode.com/rmarabini/people/personas/', {
+    const response = await fetch(API_URL, {
       method: 'POST',
       body: JSON.stringify(persona),
       headers: { 'Content-type': 'application/json; charset=UTF-8' },
@@ -54,6 +56,7 @@ const agregarPersona = async (persona) => {
     
     const personaCreada = await response.json();
     personas.value = [...personas.value, personaCreada];
+    
   } catch (error) {
     console.error(error);
   }
@@ -62,7 +65,7 @@ const agregarPersona = async (persona) => {
 const eliminarPersona = async (persona_id) => {
   // Metodo para eliminar una persona
   try {
-    await fetch('https://my-json-server.typicode.com/rmarabini/people/personas/'+persona_id+'/', {
+    await fetch(API_URL + '/' + persona_id, {
       method: "DELETE"
     });
     
@@ -75,7 +78,7 @@ const eliminarPersona = async (persona_id) => {
 const actualizarPersona = async (id, personaActualizada) => {
   // Metodo para actualizar una persona
   try {
-      const response = await fetch('https://my-json-server.typicode.com/rmarabini/people/personas/'+personaActualizada.id+'/', {
+      const response = await fetch(API_URL + '/' + personaActualizada.id, {
           method: 'PUT',
           body: JSON.stringify(personaActualizada),
             headers: { 'Content-type': 'application/json; charset=UTF-8' },
