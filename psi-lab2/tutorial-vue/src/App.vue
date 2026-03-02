@@ -55,6 +55,10 @@ const agregarPersona = async (persona) => {
     });
     
     const personaCreada = await response.json();
+    if (!response.ok) {
+      console.error('Error al agregar la persona', personaCreada);
+      return;
+    }
     personas.value = [...personas.value, personaCreada];
     
   } catch (error) {
@@ -65,7 +69,7 @@ const agregarPersona = async (persona) => {
 const eliminarPersona = async (persona_id) => {
   // Metodo para eliminar una persona
   try {
-    await fetch(API_URL + '/' + persona_id, {
+    await fetch(API_URL + persona_id + '/', {
       method: "DELETE"
     });
     
@@ -78,7 +82,7 @@ const eliminarPersona = async (persona_id) => {
 const actualizarPersona = async (id, personaActualizada) => {
   // Metodo para actualizar una persona
   try {
-      const response = await fetch(API_URL + '/' + personaActualizada.id, {
+      const response = await fetch(API_URL + personaActualizada.id + '/', {
           method: 'PUT',
           body: JSON.stringify(personaActualizada),
             headers: { 'Content-type': 'application/json; charset=UTF-8' },
