@@ -15,7 +15,7 @@ context('Add persona', () => {
     cy.get('[data-cy=name]').type("Paco")
     cy.get('[data-cy=surname]').type("Land")
     cy.get('[data-cy=email]').type("pacoland@static.com")
-    cy.get('[data-cy=add-button]').click()    
+    cy.get('[data-cy=add-button]').click()
       cy.wait(2000)
     cy.get('div.alert-success')
   })
