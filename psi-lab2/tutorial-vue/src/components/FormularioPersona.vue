@@ -38,7 +38,10 @@
           </div>
           <div class="col-md-4">
             <div class="form-group">
-              <!-- Etiqueta y campo de entrada para el correo electronico con binding bidireccional v-model -->
+              <!-- Etiqueta y campo de entrada para el correo electronico con binding bidireccional v-model 
+               * La expresion regular es para validar el email
+                pattern="^[^\s@]+@[^\s@]+\.[a-zA-Z0-9]{2,63}$"
+                title="Por favor, introduce un email válido"-->
               <label>Email</label>
               <input
                 v-model="persona.email"
