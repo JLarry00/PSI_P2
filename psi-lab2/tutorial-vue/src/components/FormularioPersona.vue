@@ -46,6 +46,8 @@
               <input
                 v-model="persona.email"
                 type="email"
+                pattern="^[^\s@]+@[^\s@]+\.[a-zA-Z0-9]{2,63}$"
+                title="Por favor, introduce un email válido"
                 class="form-control"
                 data-cy="email"
                 :class="{ 'is-invalid': procesando && emailInvalido }"
@@ -89,11 +91,11 @@
               La persona ha sido agregada correctamente!
             </div>
             <div
-              v-else-if="addResult != null && addResult.success === false"
+              v-if="result && result.action === 'add' && !result.success"
               class="alert alert-danger"
               role="alert"
             >
-              {{ addResult.message }}
+              {{ result.message }}
             </div>
           </div>
         </div>
@@ -122,9 +124,9 @@ const persona = ref({
 });
 
 const props = defineProps({
-  addResult: { type: Object, default: null },
+  result: { type: Object, default: null },
 });
-const correcto = computed(() => props.addResult != null && props.addResult.success === true);
+const correcto = computed(() => props.result != null && props.result.action === 'add' && props.result.success);
 
 const emit = defineEmits(['add-persona', 'clear-add-result']);
 

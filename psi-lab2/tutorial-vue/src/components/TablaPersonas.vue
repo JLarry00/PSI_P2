@@ -9,6 +9,14 @@
       No se han encontrado personas
     </div>
     <div v-else>
+      <div
+        v-if="result && result.action === 'update' && !result.success"
+        class="alert alert-danger"
+        role="alert"
+      >
+        {{ result.message }}
+      </div>
+
       <table class="table">
         <thead>
           <tr>
@@ -26,7 +34,7 @@
             <td v-if="editando === persona.id">
               <input
                 id="persona.nombre"
-                v-model="persona.nombre"
+                v-model="personaEditada.nombre"
                 type="text"
                 class="form-control"
                 data-cy="persona-nombre"
@@ -37,7 +45,7 @@
             </td>
             <td v-if="editando === persona.id">
               <input
-                v-model="persona.apellido"
+                v-model="personaEditada.apellido"
                 type="text"
                 class="form-control"
               >
@@ -47,7 +55,7 @@
             </td>
             <td v-if="editando === persona.id">
               <input
-                v-model="persona.email"
+                v-model="personaEditada.email"
                 type="email"
                 class="form-control"
               >
@@ -103,6 +111,7 @@
 
   const props = defineProps({
     personas: {type: Array, default: () => []},
+    result: { type: Object, default: null },
   });
   const emit = defineEmits(['actualizar-persona', 'delete-persona']);
 
@@ -115,15 +124,19 @@
   };
 
   const guardarPersona = (persona) => {
-    if (!persona.nombre.length || !persona.apellido.length || !persona.email.length) {
+    const p = personaEditada.value;
+    if (!p.nombre.length || !p.apellido.length || !p.email.length) {
       return;
     }
-    emit('actualizar-persona', persona.id, persona);
+    emit('actualizar-persona', editando.value, { ...p });
     editando.value = null;
   };
 
-  const cancelarEdicion = (persona) => {
-    Object.assign(persona, personaEditada.value);
+  // const cancelarEdicion = (persona) => {
+  //   Object.assign(persona, personaEditada.value);
+  //   editando.value = null;
+  // };
+  const cancelarEdicion = () => {
     editando.value = null;
   };
 </script>

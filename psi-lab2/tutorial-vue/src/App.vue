@@ -13,12 +13,13 @@
       <div class="col-md-12">
         <!-- <formulario-persona @add-persona="agregarPersona" /> -->
         <formulario-persona
-          :add-result="addResult"
+          :result="requestResult"
           @add-persona="agregarPersona"
-          @clear-add-result="addResult = null"
+          @clear-add-result="requestResult = null"
         />
         <tabla-personas
           :personas="personas"
+          :result="requestResult"
           @delete-persona="eliminarPersona"
           @actualizar-persona="actualizarPersona"
         />
@@ -40,8 +41,30 @@
   });
 
   const personas = ref([]);
-  // addResult = null | { success: true } | { success: false, message: string }
-  const addResult = ref(null);
+  // requestResult = null | { success: true } | { success: false, message: string }
+  const requestResult = ref(null);
+
+  const formatearErrorDjango = (data, mensajePorDefecto) => {
+    let message = mensajePorDefecto;
+
+    if (data && typeof data === 'object') {
+      const firstKey = Object.keys(data)[0];      // p.ej. "email"
+      const firstValue = data[firstKey];          // p.ej. ["Enter a valid email address."]
+
+      let firstMessage = '';
+      if (Array.isArray(firstValue) && firstValue.length > 0) {
+        firstMessage = firstValue[0];
+      } else if (typeof firstValue === 'string') {
+        firstMessage = firstValue;
+      }
+
+      if (firstMessage) {
+        message = `${firstKey}: ${firstMessage}`;
+      }
+    }
+
+    return message;
+  };
 
   const listadoPersonas = async () => {
     // Metodo para obtener un listado de personas
@@ -54,44 +77,37 @@
   };
 
   const agregarPersona = async (persona) => {
-    addResult.value = null;
+    requestResult.value = null;
     try {
       const response = await fetch(API_URL, {
         method: 'POST',
         body: JSON.stringify(persona),
         headers: { 'Content-type': 'application/json; charset=UTF-8' },
       });
-      
       const personaCreada = await response.json();
 
       if (!response.ok) {
-
-        let message = 'No se ha podido agregar la persona.';
-
-        if (personaCreada && typeof personaCreada === 'object') {
-          const firstKey = Object.keys(personaCreada)[0];     // p.ej. "email"
-          const firstValue = personaCreada[firstKey];         // p.ej. ["Enter a valid email address."]
-
-          let firstMessage = '';
-          if (Array.isArray(firstValue) && firstValue.length > 0) {
-            firstMessage = firstValue[0];                     // "Enter a valid email address."
-          } else if (typeof firstValue === 'string') {
-            firstMessage = firstValue;
-          }
-          message = `${firstKey}: ${firstMessage}`;
-        }
-        
-        addResult.value = { success: false, message };
+        const message = formatearErrorDjango(personaCreada, 'No se ha podido agregar la persona.');
+        requestResult.value = {
+          action: 'add',
+          success: false,
+          message,
+        };
         return;
       }
 
       if (personaCreada != null) {
         personas.value = [...personas.value, personaCreada];
       }
-      addResult.value = { success: true };
+      requestResult.value = {
+        action: 'add',
+        success: true,
+        message: 'La persona ha sido agregada correctamente.',
+      };
     } catch (error) {
       console.error(error);
-      addResult.value = {
+      requestResult.value = {
+        action: 'add',
         success: false,
         message: 'Error de red. Inténtalo de nuevo más tarde.',
       };
@@ -121,9 +137,31 @@
             });
 
         const personaActualizadaJS = await response.json();
-        personas.value = personas.value.map(u => (u.id === personaActualizada.id ? personaActualizadaJS : u));         
+        if (!response.ok) {
+          const message = formatearErrorDjango(personaActualizadaJS,'No se ha podido actualizar la persona.');
+          requestResult.value = {
+            action: 'update',
+            success: false,
+            message,
+          };
+          return;   // no tocar la lista
+        }
+
+        if (response.ok) {
+          personas.value = personas.value.map(u => (u.id === personaActualizada.id ? personaActualizadaJS : u));
+        }
+        requestResult.value = {
+          action: 'update',
+          success: true,
+          message: 'La persona ha sido actualizada correctamente.',
+        };
     } catch (error) {
       console.error(error);
+      requestResult.value = {
+        action: 'update',
+        success: false,
+        message: 'Error de red. Inténtalo de nuevo más tarde.',
+      };
     }      
   };
 
