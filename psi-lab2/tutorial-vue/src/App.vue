@@ -12,6 +12,7 @@
     <div class="row">
       <div class="col-md-12">
         <!-- <formulario-persona @add-persona="agregarPersona" /> -->
+        <!-- Así se pasan las variables y funciones al componente -->
         <formulario-persona
           :result="requestResult"
           @add-persona="agregarPersona"
