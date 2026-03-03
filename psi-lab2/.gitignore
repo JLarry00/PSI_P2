@@ -14,3 +14,6 @@ ENV/
 .ENV/
 .env/
 
+# Node / frontend
+node_modules/
+tutorial-vue/node_modules/
