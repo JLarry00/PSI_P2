@@ -38,8 +38,10 @@
   import { ref, onMounted } from 'vue';
   import { useCounterStore } from '@/stores/counter'; // usar en método correspondiente
 
-  const API_URL = 'http://localhost:8001/api/v1/personas/';
+  //const API_URL = 'http://localhost:8001/api/v1/personas/';
 
+  const API_URL = import.meta.env.VITE_DJANGOURL;
+  console.log(API_URL);
   defineOptions({
     name: 'app',
   });
